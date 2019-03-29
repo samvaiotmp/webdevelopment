@@ -10,44 +10,61 @@ const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rho
 
 const app = express();
 
+const _ = require('lodash');
+
 const posts = [];
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static("public"));
 
-app.get("/", function(req,res){
-  res.render("home", {homeStarting : homeStartingContent});
+app.get("/", function(req, res) {
+  res.render("home", {
+    homeStarting: homeStartingContent,
+    posts: posts
+  });
 });
 
-app.get("/about", function(req,res){
-  res.render("about", {homeStarting : aboutContent});
+app.get("/about", function(req, res) {
+  res.render("about", {
+    homeStarting: aboutContent
+  });
 });
 
-app.get("/contact", function(req,res){
-  res.render("contact", {homeStarting : contactContent});
+app.get("/posts/:postName", function(req, res) {
+  const requestedTitle = _.lowerCase(req.params.postName);
+  posts.forEach(function(post) {
+    const storedTitle = _.lowerCase(post.title);
+    if (storedTitle === requestedTitle) {
+      res.render("post", {
+        title: post.title,
+        content: post.content
+      });
+    }
+  });
 });
 
-app.get("/compose", function(req,res){
+app.get("/contact", function(req, res) {
+  res.render("contact", {
+    homeStarting: contactContent
+  });
+});
+
+app.get("/compose", function(req, res) {
   res.render("compose");
 });
 
-app.post("/compose", function(req, res){
+app.post("/compose", function(req, res) {
   const post = {
     title: req.body.blogPostHeading,
     content: req.body.blogPostData
   };
   posts.push(post);
-  res.render("home", {homeStarting : homeStartingContent});
+  res.redirect("/");
 });
-
-
-
-
-
-
-
 
 
 app.listen(3000, function() {

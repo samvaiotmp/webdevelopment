@@ -1,18 +1,15 @@
-<%- include("partials/header") -%>
+<%- include("partials/header"); -%>
 
 <h1>Home</h1>
 
-<p>
-  <%= homeStarting %>
+<p><%= startingContent %></p>
+<% console.log("Entering for loop in home.ejs"); %>
+<% posts.forEach(function(post) { %>
+<% const postLink = "/posts/"+post.title %>
+<h1><%= post.title %></h1>
+<p><%= post.content.substring(0,100)+"..." %>
+  <a href=<%=postLink%>>Read More</a>
 </p>
-
-<div class="box">
-  <% posts.forEach(function(post) { %>
-  <div class="item">
-      <h1><%= post.title %></h1>
-      <p><%= post.content %></p>
-  </div>
-  <% }); %>
-</div>
-
+<% }) %>
+<% console.log("Out of the for loop in home.ejs"); %>
 <%- include("partials/footer") -%>
